@@ -1,0 +1,99 @@
+.pokemon{
+    flex: 0 0 calc(20% - 14px);   /* explanation of shorthand : */
+    height:300px;
+    border:1px solid black;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pokemon-name{
+    font-size: 20px;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: capitalize;
+    border-bottom: 1px dotted gray;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pokemon-image{
+    margin-top: 2rem;
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+}
+
+.pokemon:hover{
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+    background-color: rgb(246, 245, 244);
+}
+
+.pokemon-link{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* wrapper to center loader */
+.image-wrapper {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* hide image until loaded */
+.hidden {
+  display: none;
+}
+
+/* spinner loader */
+.loader1 {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+   @media (max-width: 768px) {
+  .pokemon {
+    flex: 0 0 calc(50% - 12px); /* 👈 2 cards per row */
+    height: auto;
+    justify-content: space-evenly;
+  }
+
+  .pokemon-name {
+    font-size: 16px;
+    padding: 5px 0;
+  }
+
+  .image-wrapper{
+    width: 120px;
+    height: 160px;
+  }
+
+  .pokemon-image {
+    width: 120px;
+    height: 120px;
+    margin-top: 1rem;
+  }
+}  
