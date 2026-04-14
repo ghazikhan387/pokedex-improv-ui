@@ -4,152 +4,124 @@ import axios from "axios";
 import "./PokemonEvolution.css";
 import LoaderCircle from "../Loader/LoaderCircle";
 
-
+// --- 1. Helper Functions ---
 function extractEvolutionTree(chain) {
   if (!chain) return null;
-
   return {
     name: chain.species.name,
     url: chain.species.url,
-    evolves_to: chain.evolves_to.map((evo) =>
-      extractEvolutionTree(evo)
-    ),
+    evolves_to: chain.evolves_to.map(extractEvolutionTree),
   };
 }
 
+// --- 2. Custom Hooks for API Calls ---
+function useEvolutionTree(id) {
+  const [tree, setTree] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-function capitalize(name) {
-  return name.charAt(0).toUpperCase() + name.slice(1);
+  useEffect(() => {
+    if (!id) return;
+
+    async function fetchTree() {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data: species } = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
+        const { data: evolution } = await axios.get(species.evolution_chain.url);
+        setTree(extractEvolutionTree(evolution.chain));
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load evolution chain.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTree();
+  }, [id]);
+
+  return { tree, loading, error };
 }
 
-function EvolutionNode({ node }) {
+function usePokemonData(url) {
   const [pokeData, setPokeData] = useState(null);
 
   useEffect(() => {
     async function fetchPokemon() {
       try {
-        const pokemonUrl = node.url.replace(
-          "pokemon-species",
-          "pokemon"
-        );
-
-        const res = await axios.get(pokemonUrl);
-        const data = res.data;
-
+        const pokemonUrl = url.replace("pokemon-species", "pokemon");
+        const { data } = await axios.get(pokemonUrl);
         setPokeData({
           name: data.name,
-          image:
-            data.sprites?.other?.dream_world?.front_default ||
-            data.sprites.front_default,
+          image: data.sprites?.other?.dream_world?.front_default || data.sprites.front_default,
           id: data.id,
         });
       } catch (err) {
         console.error(err);
       }
     }
-
     fetchPokemon();
-  }, [node.url]);
+  }, [url]);
 
-  if (!pokeData) {
-    return <LoaderCircle />;
-  }
+  return pokeData;
+}
+
+
+// --- 3. UI Components ---
+function EvolutionNode({ node, currentId }) {
+  const pokeData = usePokemonData(node.url);
+
+  if (!pokeData) return <LoaderCircle />;
+
+  // 🌟 Check if this node is the one the user is currently looking at
+  // We check both name and ID just in case the URL uses either one
+  const isCurrentPokemon = 
+    pokeData.name === currentId || pokeData.id.toString() === currentId;
 
   return (
     <div className="evolution-node">
-      <div className="pokemon-card">
-        <img
-          src={pokeData.image}
-          alt={pokeData.name}
-          className="pokemon-image"
-        />
-        <p className="pokemon-name">
-          {capitalize(pokeData.name)}
-        </p>
+      {/* 🌟 Apply the "active-card" class conditionally */}
+      <div className={`pokemon-card ${isCurrentPokemon ? "active-card" : ""}`}>
+        <img src={pokeData.image} alt={pokeData.name} className="pokemon-image" />
+        <p className="pokemon-name">{pokeData.name}</p>
       </div>
 
-      {node.evolves_to.length > 0 && (<>
-        <div className="evolution-arrow">→</div>
-
-        <div className="evolution-children">
-          {node.evolves_to.map((child) => (
-            <EvolutionNode
-              key={child.name + child.url}
-              node={child}
-            />
-          ))}
-        </div>
-      </>
+      {node.evolves_to.length > 0 && (
+        <>
+          <div className="evolution-arrow">→</div>
+          <div className="evolution-children">
+            {node.evolves_to.map((child) => (
+              <EvolutionNode 
+                key={child.name} 
+                node={child} 
+                currentId={currentId} /* 🌟 Pass it down to the children too! */
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
 }
 
-function PokemonEvolution() {
-  const { id } = useParams();
-
-  const [evolutionTree, setEvolutionTree] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // 🌐 API Call
-  async function downloadEvolutionChart() {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Step 1: Get species using Pokémon ID
-      const speciesRes = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon-species/${id}/`
-      );
-
-      // Step 2: Get evolution chain
-      const evolutionChainUrl =
-        speciesRes.data.evolution_chain.url;
-
-      const evolutionRes = await axios.get(
-        evolutionChainUrl
-      );
-
-      // Step 3: Build tree
-      const tree = extractEvolutionTree(
-        evolutionRes.data.chain
-      );
-
-      setEvolutionTree(tree);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load evolution chain.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (id) {
-      downloadEvolutionChart();
-    }
-  }, [id]);
+export default function PokemonEvolution() {
+  const { id } = useParams(); // This is the current Pokémon from the URL
+  const { tree, loading, error } = useEvolutionTree(id);
 
   return (
     <div className="evolution-container">
-      <h1 className="evolution-title">
-        Pokemon Evolution
-      </h1>
+      <h1 className="evolution-title">Pokemon Evolution</h1>
 
-      
       {loading && <LoaderCircle />}
+      {error && <p className="error-text">{error}</p>}
 
-    
-      {error && <p>{error}</p>}
-
-      {!loading && !error && evolutionTree && (
+      {!loading && !error && tree && (
         <div className="evolution-tree">
-          <EvolutionNode node={evolutionTree} />
+          {/* 🌟 Pass the ID from the URL into the first node */}
+          <EvolutionNode node={tree} currentId={id} />
         </div>
       )}
     </div>
   );
 }
-
-export default PokemonEvolution;

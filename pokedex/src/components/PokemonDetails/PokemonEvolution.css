@@ -1,41 +1,11 @@
 .evolution-container {
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.evolution-tree {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-direction: row;
-}
-
-.evolution-node {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pokemon-card{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 12px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.evolution-arrow {
-  font-size: 24px;
-  font-weight: bold;
-  color: #555;
-  margin: 0 10px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
 }
 
 .evolution-title {
@@ -44,10 +14,68 @@
   margin-bottom: 20px;
 }
 
+.evolution-tree {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
 
-.pokemon-name{
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: capitalize;
-    border: none;
+.evolution-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.evolution-children {
+  display: flex;
+  flex-direction: column; /* Stacks multiple evolutions (like Eevee) nicely */
+  gap: 12px;
+}
+
+.pokemon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pokemon-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.pokemon-name {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: capitalize; /* Automatically capitalizes the first letter! */
+  margin: 0;
+  border: none;
+}
+
+.evolution-arrow {
+  font-size: 24px;
+  font-weight: bold;
+  color: #555;
+  margin: 0 10px;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+
+
+.active-card {
+  border: 2px solid #ffcb05; /* Pokemon Yellow */
+  background-color: #fffdf0; /* Very light yellow background */
+  box-shadow: 0 4px 12px rgba(255, 203, 5, 0.4); /* Glowing shadow */
+  transform: scale(1.05); /* Makes it pop out slightly */
+  transition: all 0.2s ease-in-out; /* Smooth animation */
 }
