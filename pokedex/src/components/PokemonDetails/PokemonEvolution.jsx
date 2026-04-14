@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+import "./PokemonEvolution.css";
+import LoaderCircle from "../Loader/LoaderCircle";
 
 
 function extractEvolutionTree(chain) {
@@ -51,7 +52,7 @@ function EvolutionNode({ node }) {
   }, [node.url]);
 
   if (!pokeData) {
-    return <p>Loading...</p>;
+    return <LoaderCircle />;
   }
 
   return (
@@ -67,7 +68,9 @@ function EvolutionNode({ node }) {
         </p>
       </div>
 
-      {node.evolves_to.length > 0 && (
+      {node.evolves_to.length > 0 && (<>
+        <div className="evolution-arrow">→</div>
+
         <div className="evolution-children">
           {node.evolves_to.map((child) => (
             <EvolutionNode
@@ -76,6 +79,7 @@ function EvolutionNode({ node }) {
             />
           ))}
         </div>
+      </>
       )}
     </div>
   );
@@ -134,7 +138,7 @@ function PokemonEvolution() {
       </h1>
 
       
-      {loading && <p>Loading...</p>}
+      {loading && <LoaderCircle />}
 
     
       {error && <p>{error}</p>}

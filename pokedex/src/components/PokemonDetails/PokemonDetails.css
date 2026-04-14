@@ -10,6 +10,7 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    justify-content: center;
 }
 .right-column{
     grid-column: span 7;
@@ -22,4 +23,12 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);  
     gap: 12px;
+}
+
+.pokemon-title{
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: capitalize;
+
 }
