@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect,useState } from "react";
 import PokemonEvolution from "./PokemonEvolution";
+import "./PokemonDetails.css";
+import PokemonStats from "./PokemonStats";
 
 function PokemonDetails(){
 
@@ -44,13 +46,27 @@ function PokemonDetails(){
             <div className="right-column">
                  <div className="classification-specs">
                     <div className="types">{pokemon.types?.map((type)=> <span key={type}>{type}</span>)}</div>
-                    <div className="height-weight"></div>
-               </div>
-             <div className="base-stats"></div>
-               <div className="abilities"></div>
+                    <div className="height-weight">
+                        <div>Height:{pokemon.height}</div>   
+                        <div>Weight:{pokemon.weight}</div> 
+                    </div>
+                 </div>
 
+                 <div className="base-stats">
+                    <PokemonStats stats={pokemon.stats} />
+                    {console.log(pokemon.stats)}
+                 </div>
+
+
+                 <div className="abilities">
+                    abiliies: {pokemon.abilities?.map((ability) => <span key={ability}>{ability}</span>)}
+                 </div>
             </div>
+
         </div>
+        
+
+
         <PokemonEvolution />
 
         

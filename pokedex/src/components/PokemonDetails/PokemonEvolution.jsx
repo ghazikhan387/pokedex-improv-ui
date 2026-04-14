@@ -130,7 +130,7 @@ function PokemonEvolution() {
   return (
     <div className="evolution-container">
       <h1 className="evolution-title">
-        Pokemon Evolution (ID: {id})
+        Pokemon Evolution
       </h1>
 
       
@@ -139,7 +139,6 @@ function PokemonEvolution() {
     
       {error && <p>{error}</p>}
 
-  git
       {!loading && !error && evolutionTree && (
         <div className="evolution-tree">
           <EvolutionNode node={evolutionTree} />
