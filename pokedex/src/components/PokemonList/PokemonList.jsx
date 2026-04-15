@@ -4,71 +4,68 @@ import Loader from "../Loader/Loader";
 import Pokemon from "../Pokemon/Pokemon";
 import "./PokemonList.css";
 
-const DEFAULT_POKEMON_LIST_URL =
-  "https://pokeapi.co/api/v2/pokemon";
+const DEFAULT_POKEMON_LIST_URL = "https://pokeapi.co/api/v2/pokemon";
 
-function PokemonList() {
-  const [pokemonList, setPokemonList] = useState([]);
-  const [pokemonListUrl, setPokemonListUrl] = useState(
-    DEFAULT_POKEMON_LIST_URL
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [previousUrl, setPreviousUrl] = useState(null);
-  const [nextUrl, setNextUrl] = useState(null);
+function PokemonList() {  // ✅ Fix 1: Uncommented the function declaration
+  const [pokemonListState, setPokemonListState] = useState({
+    pokemonList: [],
+    pokemonListUrl: DEFAULT_POKEMON_LIST_URL,
+    previousUrl: null,
+    nextUrl: null,
+    isLoading: true,
+  });
 
   useEffect(() => {
     async function downloadPokemonList() {
-      setIsLoading(true);
+      setPokemonListState((prev) => ({ ...prev, isLoading: true }));
 
       try {
-        const response = await axios.get(pokemonListUrl);
+        const response = await axios.get(pokemonListState.pokemonListUrl);
         const pokemonResults = response.data.results;
 
-        setPreviousUrl(response.data.previous);
-        setNextUrl(response.data.next);
+        setPokemonListState((prev) => ({
+          ...prev,
+          previousUrl: response.data.previous,
+          nextUrl: response.data.next,
+        }));
 
-        const pokemonResultsPromise = pokemonResults.map(
-          async (pokemon) => {
-            const pokemonResponse = await axios.get(pokemon.url);
-            const pokemonData = pokemonResponse.data;
+        const pokemonResultsPromise = pokemonResults.map(async (pokemon) => {
+          const pokemonResponse = await axios.get(pokemon.url);
+          const pokemonData = pokemonResponse.data;
 
-            return {
-              id: pokemonData.id,
-              name: pokemonData.name,
-              image:
-                pokemonData.sprites?.other?.dream_world
-                  ?.front_default ||
-                pokemonData.sprites?.other?.["official-artwork"]
-                  ?.front_default ||
-                pokemonData.sprites?.front_default,
-            };
-          }
-        );
+          return {
+            id: pokemonData.id,
+            name: pokemonData.name,
+            image:
+              pokemonData.sprites?.other?.dream_world?.front_default ||
+              pokemonData.sprites?.other?.["official-artwork"]?.front_default ||
+              pokemonData.sprites?.front_default,
+          };
+        });
 
-        const pokemonData = await Promise.all(
-          pokemonResultsPromise
-        );
-        setPokemonList(pokemonData);
+        const pokemonData = await Promise.all(pokemonResultsPromise);
+        setPokemonListState((prev) => ({ ...prev, pokemonList: pokemonData })); // ✅ Fix 2: Was incorrectly calling setPokemonList()
       } catch (error) {
         console.error("Failed to load pokemon list:", error);
-        setPokemonList([]);
+        setPokemonListState((prev) => ({ ...prev, pokemonList: [] }));
+        alert("Failed to load pokemon list. Please try again later.");
       } finally {
-        setIsLoading(false);
+        setPokemonListState((prev) => ({ ...prev, isLoading: false }));
       }
     }
 
     downloadPokemonList();
-  }, [pokemonListUrl]);
+  }, [pokemonListState.pokemonListUrl]);
 
   return (
-    <div className={`pokemon-list-wrapper ${isLoading ? "loading-state" : ""}`}>
+    <div className={`pokemon-list-wrapper ${pokemonListState.isLoading ? "loading-state" : ""}`}>
       <div className="heading">Pokemon List</div>
 
-      {isLoading ? (
+      {pokemonListState.isLoading ? (
         <Loader />
       ) : (
         <div className="pokemon-wrapper">
-          {pokemonList.map((pokemon) => (
+          {pokemonListState.pokemonList.map((pokemon) => (
             <Pokemon
               key={pokemon.id}
               name={pokemon.name}
@@ -82,16 +79,20 @@ function PokemonList() {
       <div className="controls">
         <button
           className="button-23"
-          disabled={!previousUrl || isLoading}
-          onClick={() => setPokemonListUrl(previousUrl)}
+          disabled={!pokemonListState.previousUrl || pokemonListState.isLoading}
+          onClick={() =>
+            setPokemonListState((prev) => ({ ...prev, pokemonListUrl: prev.previousUrl }))
+          }
         >
           Prev
         </button>
 
         <button
           className="button-23"
-          disabled={!nextUrl || isLoading}
-          onClick={() => setPokemonListUrl(nextUrl)}
+          disabled={!pokemonListState.nextUrl || pokemonListState.isLoading}
+          onClick={() =>
+            setPokemonListState((prev) => ({ ...prev, pokemonListUrl: prev.nextUrl }))
+          }
         >
           Next
         </button>
