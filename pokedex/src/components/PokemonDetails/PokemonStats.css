@@ -61,3 +61,20 @@
   border-radius: 10px;
   transition: width 0.6s ease;
 }
+
+@media (max-width: 480px) {
+  .stats-wrapper {
+    padding: 0 10px;
+   
+  }
+
+  .stat-name {
+    width: 70px;
+    font-size: 12px;
+  }
+
+  .stat-value {
+    width: 30px;
+    font-size: 12px;
+  }
+}

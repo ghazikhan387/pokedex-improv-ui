@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: center;
 }
-.pokemon-image{
+.pokemon-list-image{
     margin-top: 2rem;
     width: 180px;
     height: 180px;
@@ -91,7 +91,7 @@
     height: 160px;
   }
 
-  .pokemon-image {
+  .pokemon-list-image {
     width: 120px;
     height: 120px;
     margin-top: 1rem;

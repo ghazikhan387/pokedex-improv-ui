@@ -5,7 +5,7 @@ import Pokemon from "../Pokemon/Pokemon";
 import "./PokemonList.css";
 
 const DEFAULT_POKEMON_LIST_URL =
-  "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
+  "https://pokeapi.co/api/v2/pokemon";
 
 function PokemonList() {
   const [pokemonList, setPokemonList] = useState([]);
@@ -61,7 +61,7 @@ function PokemonList() {
   }, [pokemonListUrl]);
 
   return (
-    <div className="pokemon-list-wrapper">
+    <div className={`pokemon-list-wrapper ${isLoading ? "loading-state" : ""}`}>
       <div className="heading">Pokemon List</div>
 
       {isLoading ? (

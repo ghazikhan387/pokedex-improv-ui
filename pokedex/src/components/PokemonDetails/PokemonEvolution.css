@@ -79,3 +79,16 @@
   transform: scale(1.05); /* Makes it pop out slightly */
   transition: all 0.2s ease-in-out; /* Smooth animation */
 }
+
+@media (max-width: 600px) {
+ 
+
+  .evolution-node {
+    flex-direction: column;
+    gap: 12px;
+  }
+    .evolution-arrow {
+        transform: rotate(90deg); /* Rotate arrows for vertical layout */
+        margin: 10px 0; /* Adjust margin for vertical spacing */
+    }
+}

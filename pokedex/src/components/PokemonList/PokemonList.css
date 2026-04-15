@@ -7,6 +7,13 @@
    min-width: 100vw;
    min-height: 80vh;
    flex-wrap: wrap;
+   position: relative;
+}
+
+.loading-state {
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
 }
 
 .heading{

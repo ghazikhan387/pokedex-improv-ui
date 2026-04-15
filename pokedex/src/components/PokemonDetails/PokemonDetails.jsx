@@ -1,9 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect,useState } from "react";
 import PokemonEvolution from "./PokemonEvolution";
 import "./PokemonDetails.css";
 import PokemonStats from "./PokemonStats";
+import { GiWeight,GiBodyHeight} from "react-icons/gi";
+import { FaArrowRightFromBracket } from "react-icons/fa6";
 
 function PokemonDetails(){
 
@@ -33,22 +35,46 @@ function PokemonDetails(){
 
     return(
          <>
+          <Link to="/"><div className="go-back-button"><FaArrowRightFromBracket style={{ transform: 'rotate(180deg)',marginRight: '8px' }} />Go Back</div></Link>
          
          <div className="pokemon-details-wrapper">
 
             <div className="left-column">
-                <div className="pokemon-title">{pokemon.name}</div>
-                <div className="pokemon-image-wrapper">
-                    <img className="pokemon-image" src={pokemon.image} alt={pokemon.name} />
-                </div>    
+                <div className="pokemon-image-and-name-card">
+                     <div className="pokemon-title">{pokemon.name}</div>
+                     <div className="pokemon-image-wrapper">
+                      <img className="pokemon-image-main" src={pokemon.image} alt={pokemon.name} />
+                     </div>  
+                </div>  
+
+
             </div>
 
             <div className="right-column">
                  <div className="classification-specs">
-                    <div className="types">{pokemon.types?.map((type)=> <span key={type}>{type}</span>)}</div>
+                    <div className="types">
+                        <div className="types-wrapper">
+                            <div className="types-title">Classification:</div>
+                            <div  style={{display:"flex", flexWrap:"wrap"}}>
+                            {pokemon.types?.map((type)=> <span key={type} className={`type-badge ${type}`}> {type}</span>)}
+                            </div>
+                        </div>
+                    </div>
                     <div className="height-weight">
-                        <div>Height:{pokemon.height}</div>   
-                        <div>Weight:{pokemon.weight}</div> 
+                        <div className="height-weight-wrapper">
+                                <div className="height">
+                            
+                                    <div>Height:</div>
+                                    <div> <GiBodyHeight size={20}/></div>
+                                    <div>{pokemon.height}</div>
+                            
+                                </div>   
+                                <div className="weight">
+                                    <div>Weight:</div>
+                                    <div><GiWeight  size={20}/></div>
+                                    <div>{pokemon.weight}</div>
+                                 </div> 
+                        </div>
                     </div>
                  </div>
 
@@ -59,7 +85,7 @@ function PokemonDetails(){
 
 
                  <div className="abilities">
-                    abiliies: {pokemon.abilities?.map((ability) => <span key={ability}>{ability}</span>)}
+                    <span className="abilities-title">Abilities:</span> {pokemon.abilities?.map((ability) => <span className="abilities-value" key={ability}>{ability}</span>)}
                  </div>
             </div>
 

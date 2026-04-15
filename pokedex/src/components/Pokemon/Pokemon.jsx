@@ -15,7 +15,7 @@ function Pokemon({ name, image, id }) {
         {loading && <div className="loader1"></div>}
 
         <img
-          className={`pokemon-image ${loading ? "hidden" : ""}`}
+          className={`pokemon-list-image ${loading ? "hidden" : ""}`}
           src={image}
           alt={name}
           onLoad={() => setLoading(false)}
