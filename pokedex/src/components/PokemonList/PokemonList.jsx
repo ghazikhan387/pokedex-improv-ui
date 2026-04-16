@@ -6,7 +6,7 @@ import "./PokemonList.css";
 
 const DEFAULT_POKEMON_LIST_URL = "https://pokeapi.co/api/v2/pokemon";
 
-function PokemonList() {  // ✅ Fix 1: Uncommented the function declaration
+function PokemonList() {  
   const [pokemonListState, setPokemonListState] = useState({
     pokemonList: [],
     pokemonListUrl: DEFAULT_POKEMON_LIST_URL,
@@ -44,7 +44,7 @@ function PokemonList() {  // ✅ Fix 1: Uncommented the function declaration
         });
 
         const pokemonData = await Promise.all(pokemonResultsPromise);
-        setPokemonListState((prev) => ({ ...prev, pokemonList: pokemonData })); // ✅ Fix 2: Was incorrectly calling setPokemonList()
+        setPokemonListState((prev) => ({ ...prev, pokemonList: pokemonData })); 
       } catch (error) {
         console.error("Failed to load pokemon list:", error);
         setPokemonListState((prev) => ({ ...prev, pokemonList: [] }));

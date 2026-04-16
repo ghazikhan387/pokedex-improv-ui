@@ -8,7 +8,7 @@
     gap: 0.5rem;
 }
 
-.pokemon-name{
+.pokemon-list-name{
     font-size: 20px;
     font-weight: bold;
     padding-top: 10px;
@@ -81,7 +81,7 @@
     justify-content: space-evenly;
   }
 
-  .pokemon-name {
+  .pokemon-list-name {
     font-size: 16px;
     padding: 5px 0;
   }

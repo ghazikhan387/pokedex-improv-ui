@@ -15,19 +15,20 @@ function extractEvolutionTree(chain) {
 }
 
 // --- 2. Custom Hooks for API Calls ---
-function useEvolutionTree(id) {
+function useEvolutionTree(identifier) {
   const [tree, setTree] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (!identifier) return;
 
     async function fetchTree() {
       setLoading(true);
       setError(null);
       try {
-        const { data: species } = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
+        // ✅ Uses the identifier (name or id) to fetch the evolution chain
+        const { data: species } = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${identifier}/`);
         const { data: evolution } = await axios.get(species.evolution_chain.url);
         setTree(extractEvolutionTree(evolution.chain));
       } catch (err) {
@@ -39,7 +40,7 @@ function useEvolutionTree(id) {
     }
 
     fetchTree();
-  }, [id]);
+  }, [identifier]);
 
   return { tree, loading, error };
 }
@@ -67,21 +68,18 @@ function usePokemonData(url) {
   return pokeData;
 }
 
-
-// --- 3. UI Components ---
 function EvolutionNode({ node, currentId }) {
   const pokeData = usePokemonData(node.url);
 
   if (!pokeData) return <LoaderCircle />;
 
-  // 🌟 Check if this node is the one the user is currently looking at
-  // We check both name and ID just in case the URL uses either one
+  
   const isCurrentPokemon = 
     pokeData.name === currentId || pokeData.id.toString() === currentId;
 
   return (
     <div className="evolution-node">
-      {/* 🌟 Apply the "active-card" class conditionally */}
+    
       <div className={`pokemon-card ${isCurrentPokemon ? "active-card" : ""}`}>
         <img src={pokeData.image} alt={pokeData.name} className="pokemon-image" />
         <p className="pokemon-name">{pokeData.name}</p>
@@ -95,7 +93,7 @@ function EvolutionNode({ node, currentId }) {
               <EvolutionNode 
                 key={child.name} 
                 node={child} 
-                currentId={currentId} /* 🌟 Pass it down to the children too! */
+                currentId={currentId} 
               />
             ))}
           </div>
@@ -105,9 +103,14 @@ function EvolutionNode({ node, currentId }) {
   );
 }
 
-export default function PokemonEvolution() {
-  const { id } = useParams(); // This is the current Pokémon from the URL
-  const { tree, loading, error } = useEvolutionTree(id);
+
+export default function PokemonEvolution({ pokemonName }) {
+  const { id } = useParams(); 
+  
+ 
+  const identifier = pokemonName || id; 
+  
+  const { tree, loading, error } = useEvolutionTree(identifier);
 
   return (
     <div className="evolution-container">
@@ -118,8 +121,8 @@ export default function PokemonEvolution() {
 
       {!loading && !error && tree && (
         <div className="evolution-tree">
-          {/* 🌟 Pass the ID from the URL into the first node */}
-          <EvolutionNode node={tree} currentId={id} />
+         
+          <EvolutionNode node={tree} currentId={identifier} />
         </div>
       )}
     </div>
